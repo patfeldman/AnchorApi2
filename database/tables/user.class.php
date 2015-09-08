@@ -7,6 +7,20 @@ class user extends genericTable{
 		parent::__construct(user::DB_TABLE_NAME, user::DB_UNIQUE_ID);
 	}
 	
+
+    public registerAccount($name, $pwd){
+    	$this->set_variable('username', $name);
+    	$this->set_variable('p')
+
+
+    }
+    public updateInfo($email, $phone){
+
+    }
+    public login($name, $pwd){
+
+    }
+
 	
 	
 	static public function randomPassword() {
