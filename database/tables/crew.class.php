@@ -4,6 +4,6 @@ class crew extends genericTable{
 	const DB_UNIQUE_ID = 'crewid'; 
 	
 	public function __construct(){
-		parent::__construct(user::DB_TABLE_NAME, user::DB_UNIQUE_ID);
+		parent::__construct(crew::DB_TABLE_NAME, crew::DB_UNIQUE_ID);
 	}
 }

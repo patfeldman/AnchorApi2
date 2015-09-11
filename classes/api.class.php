@@ -28,7 +28,11 @@ abstract class api
      * Property: file
      * Stores the input of the PUT request
      */
-     protected $file = Null;
+    protected $file = Null;
+
+    protected $request = null;
+    protected $input = null;
+
 
     /**
      * Constructor: __construct
@@ -59,7 +63,10 @@ abstract class api
         switch($this->method) {
         case 'DELETE':
         case 'POST':
-            $this->request = $this->_cleanInputs($_POST);
+            //print_r($_POST);
+            //print_r($_GET);
+            //$this->request = $this->_cleanInputs($_POST);
+            $this->input = $this->_cleanInputsJSON(file_get_contents('php://input'));
             break;
         case 'GET':
             $this->request = $this->_cleanInputs($_GET);
@@ -96,6 +103,10 @@ abstract class api
         } else {
             $clean_input = trim(strip_tags($data));
         }
+        return $clean_input;
+    }
+    private function _cleanInputsJSON($data) {
+        $clean_input = json_decode($data);
         return $clean_input;
     }
 

@@ -8,36 +8,41 @@ class anchorapi extends api
         parent::__construct($request);
         // Abstracted out for example
         //$APIKey = new authaccess();//new Models\APIKey();
-        // if (!array_key_exists('apiKey', $this->request)) {
+        // if (!array_key_exists('apiKey', $this->input)) {
         //     throw new Exception('No API Key provided');
-        // } else if (!$APIKey->verifyKey($this->request['apiKey'], $origin)) {
+        // } else if (!$APIKey->verifyKey($this->input->apiKey, $origin)) {
         //     throw new Exception('Invalid API Key');
-        // } else if (array_key_exists('token', $this->request) &&
-        //      !$User->get('token', $this->request['token'])) {
+        // } else if (array_key_exists('token', $this->input) &&
+        //      !$User->get('token', $this->input->token)) {
         //     throw new Exception('Invalid User Token');
         // }
         // $this->User = $User;
     }
 
-     protected function login(){
-        if ($this->method == 'POST') {
-            return "Your name is " . $this->User->name;
+     protected function authenticate(){
+        if ($this->method == 'POST' && array_key_exists("username",$this->input)) {
+            $user = new user();
+            return $user->login($this->input->username, $this->input->password);
         } else {
             return "ERROR - NOT WORKING";
         }
      }
 
     protected function register(){
-        if ($this->method == 'POST' && array_key_exists("name",$this->request)) {
+        if ($this->method == 'POST' && array_key_exists("username",$this->input)) {
             $user = new user();
-            $retVal = $user->registerAccount($this->request['name'], $this->request['pwd']);
-            if (array_key_exists("email",$this->request)){
-                $user->updateInfo($this->request['email'], $this->request['phone']);
+            $retVal = $user->registerAccount($this->input->username, $this->input->password);
+            if ($retVal == user::USERNAME_IS_TAKEN){
+                return "ERROR - USERNAME IS TAKEN";
+            } else {
+                if (array_key_exists("email",$this->input)){
+                    $user->updateInfo($this->input->email, $this->input->tel);
+                }
+                return $user->login($this->input->username, $this->input->password);
             }
-            echo $user->login($this->request['name'], $this->request['pwd']);
         } else {
-            return "ERROR - NOT WORKING";
+            return "ERROR - NOT WORKING" . print_r($this->input, true);
         }
-     }
+     }     
 
  }
