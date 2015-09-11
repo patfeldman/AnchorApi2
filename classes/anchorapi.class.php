@@ -19,14 +19,14 @@ class anchorapi extends api
         // $this->User = $User;
     }
 
-     protected function authenticate(){
+    protected function authenticate(){
         if ($this->method == 'POST' && array_key_exists("username",$this->input)) {
             $user = new user();
             return $user->login($this->input->username, $this->input->password);
         } else {
             return "ERROR - NOT WORKING";
         }
-     }
+    }
 
     protected function register(){
         if ($this->method == 'POST' && array_key_exists("username",$this->input)) {
@@ -39,6 +39,19 @@ class anchorapi extends api
                     $user->updateInfo($this->input->email, $this->input->tel);
                 }
                 return $user->login($this->input->username, $this->input->password);
+            }
+        } else {
+            return "ERROR - NOT WORKING" . print_r($this->input, true);
+        }
+    }     
+    protected function moods($argValues){
+        if ($this->method == 'GET') {
+            try{
+                $userId = authaccess::getValidUserId($argValues[0]);
+                $history = moodhistory::getLastestMoods($userId, $argValues[1]);
+                return $history;
+            } catch (Exception $e) {
+                return  "ERROR - EXPIRED OR INVALID TOKEN";
             }
         } else {
             return "ERROR - NOT WORKING" . print_r($this->input, true);

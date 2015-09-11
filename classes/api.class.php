@@ -23,7 +23,8 @@ abstract class api
      * case, an integer ID for the resource. eg: /<endpoint>/<verb>/<arg0>/<arg1>
      * or /<endpoint>/<arg0>
      */
-    protected $args = Array();
+    protected $argNames = Array();
+    protected $argValues = Array();
     /**
      * Property: file
      * Stores the input of the PUT request
@@ -39,15 +40,19 @@ abstract class api
      * Allow for CORS, assemble and pre-process the data
      */
     public function __construct($request) {
-        header("Access-Control-Allow-Orgin: *");
-        header("Access-Control-Allow-Methods: *");
-        header("Content-Type: application/json");
+        // header("Access-Control-Allow-Origin: *");
+        // header('Access-Control-Allow-Methods: *');
+        // header('Access-Control-Allow-Credentials: true');
+        // header('Access-Control-Allow-Headers: Content-Type, Access-Control-Allow-Headers, Authorization, X-Requested-With');
+        // header("Content-Type: application/json");
 
-        $this->args = explode('/', rtrim($request, '/'));
-        $this->endpoint = array_shift($this->args);
-        if (array_key_exists(0, $this->args) && !is_numeric($this->args[0])) {
-            $this->verb = array_shift($this->args);
+        $args = explode('/', rtrim($request, '/'));
+
+        $this->endpoint = array_shift($args);
+        if (array_key_exists(0, $args) && !is_numeric($args[0])) {
+            $this->verb = array_shift($args);
         }
+        $this->processArgs($args);
 
         $this->method = $_SERVER['REQUEST_METHOD'];
         if ($this->method == 'POST' && array_key_exists('HTTP_X_HTTP_METHOD', $_SERVER)) {
@@ -63,8 +68,6 @@ abstract class api
         switch($this->method) {
         case 'DELETE':
         case 'POST':
-            //print_r($_POST);
-            //print_r($_GET);
             //$this->request = $this->_cleanInputs($_POST);
             $this->input = $this->_cleanInputsJSON(file_get_contents('php://input'));
             break;
@@ -81,10 +84,19 @@ abstract class api
         }
     }
 
+    private function processArgs($allArgsArray){
+        $numArgs = count($allArgsArray);
+        $i = 0;
+        while ($i<$numArgs){
+            array_push($this->argNames, $allArgsArray[$i]);
+            array_push($this->argValues, $allArgsArray[$i+1]);
+            $i+=2;
+        }
+    }
 
     public function processAPI() {
         if (method_exists($this, $this->endpoint)) {
-            return $this->_response($this->{$this->endpoint}($this->args));
+            return $this->_response($this->{$this->endpoint}($this->argValues));
         }
         return $this->_response("No Endpoint: $this->endpoint", 404);
     }

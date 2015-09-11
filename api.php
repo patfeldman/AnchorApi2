@@ -1,4 +1,11 @@
 <?php
+        header("Access-Control-Allow-Origin: *");
+        header('Access-Control-Allow-Methods: *');
+        header('Access-Control-Allow-Credentials: true');
+        header('Access-Control-Allow-Headers: Content-Type, Access-Control-Allow-Headers, Authorization, X-Requested-With');
+        header("Content-Type: application/json");
+
+
 //const AUTOLOAD_LOCATION = '/home/openm6/public_html/biobounce/db_interface/';
 const AUTOLOAD_LOCATION = './';
 require_once("config/autoload.php");

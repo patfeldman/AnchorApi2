@@ -1,8 +1,8 @@
 <?php
 	// LOCAL CONST
 
-	const LOCATION = 'C:/xampp/htdocs/anchorapi/';
-	//const LOCATION = 'D:/xampp/htdocs/anchorapi/';
+	//const LOCATION = 'C:/xampp/htdocs/anchorapi/';
+	const LOCATION = 'D:/xampp/htdocs/anchorapi/';
 	const IS_TESTING = true;
 
 	$host = "localhost";

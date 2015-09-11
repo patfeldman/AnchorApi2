@@ -64,9 +64,10 @@ class genericTable{
 	}
 	
 
-	public function load($extraWhere='', $selectValue='*', $loadRow = true, $orderby=''){
-		$sql = "SELECT ".$selectValue." FROM " . $this->dbName . " " . $this->getWhereString($extraWhere);
-		$sql .= $orderby;	
+	public function load($extraWhere='', $selectValue='*', $loadRow = true, $orderby='', $limit=0){
+		$limitStr = ($limit>0) ? ' limit ' . $limit . ' ' : '';
+		$sql = "SELECT ". $selectValue." FROM " . $this->dbName . " " . $this->getWhereString($extraWhere);
+		$sql .= $orderby . $limitStr;	
 		$this->sql_query=$this->db->query($sql);
 		if (($this->sql_query && $loadRow) && $row = $this->sql_query->fetch_assoc() ) 
 			$this->loadRowInformation($row);
@@ -87,14 +88,14 @@ class genericTable{
 	
 		
 			
-	public function loadNext($extraWhere='', $orderby=''){
+	public function loadNext($extraWhere='', $orderby='', $limit=0){
 		if ($this->sql_query  && isset($this->sql_query)){
 			if ($row = $this->sql_query->fetch_assoc() ) 
 				$this->loadRowInformation($row);
 			else
 				return false;
 		}else{
-			return $this->load($extraWhere, '*', true, $orderby );
+			return $this->load($extraWhere, '*', true, $orderby, $limit);
 		}
 		return true;
 	}

@@ -3,6 +3,7 @@ class authaccess extends genericTable{
 	const DB_TABLE_NAME = 'authaccess'; 
 	const DB_UNIQUE_ID = 'accessId'; 
 	const TOKEN_LENGTH = 20; 
+	const ExPIRED_TOKEN = -1;
 	
 	public function __construct(){
 		parent::__construct(authaccess::DB_TABLE_NAME, authaccess::DB_UNIQUE_ID);
@@ -22,8 +23,13 @@ class authaccess extends genericTable{
 		return $token;
 	}
 
-	public static function VerifyKey($key, $origin){
-
+	public static function getValidUserId($token){
+		$authaccess = new authaccess();
+		$authaccess->set_variable('authToken', $token);
+		if ($authaccess->load()){
+			return $authaccess->get_variable('userId');
+		}
+		throw new Exception('EXPIRED TOKEN');	
 	}
 	// static public function randomToken() {
 	// 	return md5(uniqid(rand(), true));
