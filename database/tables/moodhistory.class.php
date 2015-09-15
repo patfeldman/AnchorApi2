@@ -8,13 +8,30 @@ class moodhistory extends genericTable{
 	}
 
 	public static function getLastestMoods($userId, $numMoods){
-		$retVal = array();
+		$retVal['data'] = array();
+		$retVal['success'] = true;
+
 		$mood = new moodhistory();
 		$mood->set_variable("userId", $userId);
-		while ($mood->loadNext('', ' order by date', $numMoods )){
+		while ($mood->loadNext('', ' order by date desc ', $numMoods )){
 			$item['GroupId'] = $mood->get_variable('moodGroup');
-			//$retVal
+			$item['MoodId']= $mood->get_variable('moodItem');
+			$item['Time']= date('h:i a, M jS, Y', strtotime($mood->get_variable('date')));
+			array_push ($retVal['data'], $item);
 		}
+		return $retVal;
 
 	}
+	public static function addMood($userId, $groupId, $moodId){
+		$retVal['success'] = true;
+
+		$mood = new moodhistory();
+		$mood->set_variable("userId", $userId);
+		$mood->set_variable("moodGroup", $groupId);
+		$mood->set_variable("moodItem", $moodId);
+		$mood->set_variable("date", date("Y-m-d H:i:s"));
+		$mood->createNew();
+		return $retVal;
+	}
+
 }

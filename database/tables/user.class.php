@@ -22,7 +22,8 @@ class user extends genericTable{
 	    	$this->set_variable('password', $pwd);
 	    	$this->userId = $this->createNew();
 	    	$this->set_variable('userid', $this->userId);
-	    	return $this->load();
+	    	$this->load();
+	    	return $this->userId;
     	}
     }
 

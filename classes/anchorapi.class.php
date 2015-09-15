@@ -53,7 +53,16 @@ class anchorapi extends api
             } catch (Exception $e) {
                 return  "ERROR - EXPIRED OR INVALID TOKEN";
             }
-        } else {
+        } else if ($this->method == 'POST') {
+            try{
+                $userId = authaccess::getValidUserId($argValues[0]);
+                $history = moodhistory::addMood($userId, $this->input->groupId, $this->input->moodId);
+                return $history;
+            } catch (Exception $e) {
+                return  "ERROR - EXPIRED OR INVALID TOKEN";
+            }
+
+        } else {    
             return "ERROR - NOT WORKING" . print_r($this->input, true);
         }
      }     
